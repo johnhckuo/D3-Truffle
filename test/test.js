@@ -394,11 +394,38 @@ contract('Congress', function(accounts) {
 
   it("updae IPhone rating by Bill", function() {
     return usingProperty.deployed().then(function(instance){
-        return instance.updatePropertiesRating(5, 80, "update",  {from:accounts[2]});
+        return instance.updatePropertiesRating(5, 95, "update",  {from:accounts[2]});
       }).then(function(txs){
             console.log(txs);
 
         });
+  });
+
+  it("match making test", function(done) {
+    var main;
+    return MainActivity.deployed().then(function(instance){
+      main = instance;
+
+      main.matchSuccess().watch(function(error, result){
+        if (!error)
+          console.log(result.args);
+      });
+
+      main.test().watch(function(error, result2){
+        if (!error)
+          console.log(result2.args);
+      });
+
+      // main.matchFail().watch(function(error, result){
+      //   if (!error)
+      //     console.log("Fail !!!!!!!!!");
+      // });
+
+        return instance.startMatching({from:accounts[0]});
+      }).then(function(result){
+            //console.log(result);
+
+      });
   });
 
   // it("test", function() {
