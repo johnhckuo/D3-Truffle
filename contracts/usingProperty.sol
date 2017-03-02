@@ -114,7 +114,7 @@ contract usingProperty{
         return (propertyList[p_Id].name, propertyList[p_Id].since, propertyList[p_Id].propertyCount, propertyList[p_Id].unit, propertyList[p_Id].minUnit, propertyList[p_Id].owner, propertyList[p_Id].extraData);
     }
 
-    function getPartialProperty(uint p_Id) returns(address, uint){
+    function getPartialProperty(uint p_Id) constant returns(address, uint){
         return (propertyList[p_Id].owner, propertyList[p_Id].averageRating);
     }
 
@@ -131,6 +131,8 @@ contract usingProperty{
             propertyList[_id].rating.push(0);
         }else if (sha3(operation) == sha3("update")){
             uint length = congress.getStakeholdersLength();
+
+            length = length-1; // ignore founder rating
 
             uint s_Id = congress.stakeholderId(msg.sender);
             propertyList[_id].rating[s_Id] = rate;
