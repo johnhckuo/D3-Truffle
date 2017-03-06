@@ -2,26 +2,66 @@ var accounts;
 var account;
 var balance;
 
-var congress;
+var Congress, usingProperty;
 
 function init(event){
-    Congress.deployed().then(function(instance){
-      congress = instance;
-      return instance.addMember("John", 100, 100, 50, "buyer", {from:accounts[1]});
-    }).then(function(txs){
-          console.log("txs");
-          console.log(txs);
+
+    $(".getCongressAddr").click(getCongressAddr);
+    $(".addMember").click(addMember);
+
+
+    Congress.deployed().then(function(instance,txs){
+      console.log(instance);
+      Congress = instance;
+      alert("Congress Address:" +Congress.address);
+    });
+
+    usingProperty.deployed().then(function(instance){
+      usingProperty = instance;
+      alert("usingProperty Address:" +usingProperty.address);
     });
 
     //傾聽事件
-    // congress.createTime().watch(function(error, result){
+    // Congress.createTime().watch(function(error, result){
     //   if (!error)
     //     alert("contract created!");
     // });
 
-    console.log(congress.address)
-    printConsole("<p>合約位址："+congress.address+"</p><p>交易Hash："+congress.transactionHash+"</p>", "建立成功");
 
+}
+
+
+
+
+function addMember(){
+    var name = $(".s_Name").val();
+    var threshold = parseInt($(".s_Threshold").val());
+    var fund = parseInt($(".s_Fund").val());
+    var rate = parseInt($(".s_Rate").val());
+    var character = $(".s_Character").val();
+    console.log(name, threshold, fund, rate, character);
+
+
+    Congress.addMember(name, threshold, fund, rate, character, {from:accounts[1], gas:221468})
+    .then(function(txs){
+        console.log("txs");
+        console.log(txs);
+    });
+}
+
+function getStakeholdersLength(){
+    Congress.getStakeholdersLength.call({from:accounts[0]})
+    .then(function(result){
+      console.log("get Stakeholder Length");
+      console.log(result);
+    });
+}
+
+function getCongressAddr(){
+    usingProperty.getCongressAddr.call({from:accounts[1]})
+    .then(function(addr){
+        console.log(addr);
+    });
 }
 
 
@@ -34,7 +74,9 @@ function hex2a(hexx) {
 }
 
 
+
 window.onload = function() {
+  console.log("h")
   web3.eth.getAccounts(function(err, accs) {
     if (err != null) {
       alert("There was an error fetching your accounts.");
@@ -48,6 +90,7 @@ window.onload = function() {
 
     accounts = accs;
     account = accounts[0];
+    alert(account)
     init();
   });
 }
